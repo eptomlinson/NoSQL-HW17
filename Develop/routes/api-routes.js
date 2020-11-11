@@ -1,35 +1,65 @@
-const router = require("express").Router();
-const Transaction = require("../models/transaction.js");
+// const router = require("express").Router();
+const { PromiseProvider } = require("mongoose");
+const db = require("../models");
 
-router.post("/api/transaction", ({ body }, res) => {
-  Transaction.create(body)
-    .then(dbTransaction => {
-      res.json(dbTransaction);
+
+module.exports = app => {
+
+    app.get("/api/workouts", (req, res) => {
+        db.Workout.find({})
+        .then(dbWorkout => {
+            res.json(dbWorkout)
+        })
     })
-    .catch(err => {
-      res.status(400).json(err);
-    });
-});
 
-router.post("/api/transaction/bulk", ({ body }, res) => {
-  Transaction.insertMany(body)
-    .then(dbTransaction => {
-      res.json(dbTransaction);
+    app.post("/api/workouts", ({body}, res) => {
+        db.Workout.create({})
+           .then(dbWorkout => {
+               res.json(dbWorkout)
+           })
+           .catch(({message}) => {
+               console.log(message)
+           })
     })
-    .catch(err => {
-      res.status(400).json(err);
-    });
-});
 
-router.get("/api/transaction", (req, res) => {
-  Transaction.find({})
-    .sort({ date: -1 })
-    .then(dbTransaction => {
-      res.json(dbTransaction);
+    app.put("/api/workouts/:id", (req, res) => {
+        let id = req.params.id;
+        let data = req.body;
+
+        db.Workout.findByIdAndUpdate(id, {
+            $push: {exercises: data}
+            // t
+        }).then(dbUpdate => {
+            res.send(dbUpdate)
+        })
     })
-    .catch(err => {
-      res.status(400).json(err);
-    });
-});
 
-module.exports = router;
+    app.get("/api/workouts/range", (req, res) => {
+        db.Workout.find({})
+            .then(dbWorkout => {
+                res.json(dbWorkout)
+            })
+    })
+}
+//     router.post("/api/transaction/bulk", ({ body }, res) => {
+//         Transaction.insertMany(body)
+//     .then(dbTransaction => {
+//       res.json(dbTransaction);
+//     })
+//     .catch(err => {
+//       res.status(400).json(err);
+//     });
+// });
+
+// router.get("/api/transaction", (req, res) => {
+//   Transaction.find({})
+//     .sort({ date: -1 })
+//     .then(dbTransaction => {
+//       res.json(dbTransaction);
+//     })
+//     .catch(err => {
+//       res.status(400).json(err);
+//     });
+// });
+
+// module.exports = router;
