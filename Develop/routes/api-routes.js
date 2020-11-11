@@ -27,8 +27,8 @@ module.exports = app => {
         let data = req.body;
 
         db.Workout.findByIdAndUpdate(id, {
-            $push: {exercises: data}
-            // t
+            $push: {exercises: data},
+            $push: {totalDuration: data}
         }).then(dbUpdate => {
             res.send(dbUpdate)
         })
