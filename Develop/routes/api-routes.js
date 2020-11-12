@@ -1,4 +1,3 @@
-// const router = require("express").Router();
 const { PromiseProvider } = require("mongoose");
 const db = require("../models");
 
@@ -13,7 +12,7 @@ module.exports = app => {
     })
 
     app.post("/api/workouts", ({body}, res) => {
-        db.Workout.create({})
+        db.Workout.create(body)
            .then(dbWorkout => {
                res.json(dbWorkout)
            })
@@ -28,7 +27,6 @@ module.exports = app => {
 
         db.Workout.findByIdAndUpdate(id, {
             $push: {exercises: data},
-            $push: {totalDuration: data}
         }).then(dbUpdate => {
             res.send(dbUpdate)
         })
@@ -40,4 +38,5 @@ module.exports = app => {
                 res.json(dbWorkout)
             })
     })
+    
 };
